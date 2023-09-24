@@ -6,6 +6,12 @@ const isValidThemeMode = (value: string | null): value is Theme => {
   return ["light", "dark"].includes(value as Theme);
 };
 
+const updateDOM = (value: Theme) => {
+  const root = document.documentElement;
+  root.classList.remove(value === "light" ? "dark" : "light");
+  root.classList.add(value);
+}
+
 export default function Theme() {
   const [theme, setTheme] = createSignal<Theme>("light");
 
@@ -25,17 +31,17 @@ export default function Theme() {
     }
 
     setTheme(initialTheme);
+    updateDOM(initialTheme);
   });
 
   const toggle = () => {
-    const isDark = theme() === ("dark" as Theme);
+    console.log(theme());
+    const isDark = theme() === "dark";
     let newMode: Theme = isDark ? "light" : "dark";
-    const root = document.documentElement;
-
-    root.classList.remove(isDark ? "dark" : "light");
-    root.classList.add(newMode);
+    
     localStorage.setItem("color-theme", newMode);
     setTheme(newMode);
+    updateDOM(newMode);
   };
 
   return (
